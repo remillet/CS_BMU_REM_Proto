@@ -797,7 +797,8 @@ def _rerun_checks(tenant: Tenant, r: dict, perms: dict[str, bool], lookup, clien
         names.insert(1, obj_step)
     todo = list(dict.fromkeys(STEP_TEXT.get(n, n) for n in names
                               if (st.get(n) or {}).get("s") not in FINISHED and not (skip and n in OBJ_STEPS + REL_STEPS + ("addToGroup",))))
-    out.append({"level": "info", "text": ("The rerun will only " + " and ".join(todo) + "." if todo
+    listed = ", ".join(todo[:-1]) + " and " + todo[-1] if len(todo) > 1 else "".join(todo)
+    out.append({"level": "info", "text": ("The rerun will only " + listed + "." if todo
                                           else "Nothing is left to do for this document; the rerun skips it.")
                 + (" Its remaining object steps are skipped: you stopped linking it to an object." if skip else "")})
     if open_steps(r, ("upload",)):
@@ -857,8 +858,8 @@ def _rerun_checks(tenant: Tenant, r: dict, perms: dict[str, bool], lookup, clien
 
 STEP_TEXT = {"values": "check the document in CollectionSpace", "media": "create the Media record", "findObject": "find the object", "createObject": "create the object",
              "findOrCreateObject": "find or create the object",
-             "upload": "upload the file", "relMediaObject": "link it to its object", "relObjectMedia": "link it to its object",
-             "addToGroup": "add its object to the job's group"}
+             "upload": "upload the file", "relMediaObject": "link the Media record to the object", "relObjectMedia": "link the Media record to the object",
+             "addToGroup": "add the object to the job's group"}
 
 
 def worst(row: dict) -> str:

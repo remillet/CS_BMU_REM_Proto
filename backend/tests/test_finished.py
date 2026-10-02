@@ -382,6 +382,7 @@ def test_create_fails_when_the_object_appeared_after_the_check_and_the_row_can_s
     # still "create": the rerun check says the object exists
     checks = api.post(f"/api/jobs/{job}/check").json()["rows"][0]["checks"]
     assert any(c["level"] == "block" and "already exists" in c["text"] for c in checks), checks
+    assert any(c["text"] == "The rerun will only create the object and link the Media record to the object." for c in checks), checks
     # only a handling that links to the existing object is allowed
     r = api.patch(f"/api/jobs/{job}/rows/1", json={"handling": "mediaonly"})
     assert r.status_code == 422 and "links to that object" in r.json()["detail"]
